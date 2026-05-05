@@ -14,7 +14,8 @@ public class PopulationController : MonoBehaviour
     public float mutationRate = 0.01f;
     public Transform spawnPoint;
     public Transform end;
-    
+    public LayerMask obstacleLayer;
+
     void InitPopulation()
     {
         for(int i = 0; i < populationSize; i++)
@@ -64,14 +65,50 @@ public class PopulationController : MonoBehaviour
     }
     private void Start()
     {
+        Time.timeScale = 5.0f;
         InitPopulation();
     }
     private void Update()
     {
+        CheckForResources();
         if (!HasActive())
         {
             NextGeneration();
         }
+    }
+
+    void CheckForResources()
+    {
+        foreach (var agent in population)
+        {
+            if (Vector2.Distance(agent.transform.position, end.position) < 3f)
+            {
+                Vector2 newPos = GetValidRandomPosition();
+                end.position = newPos;
+                break;
+            }
+        }
+    }
+
+    Vector2 GetValidRandomPosition()
+    {
+        Vector2 potentialPos = Vector2.zero;
+        bool isValid = false;
+        int attempts = 0;
+
+        while (!isValid && attempts < 100)
+        {
+            attempts++;
+            potentialPos = new Vector2(Random.Range(-18f, 18f), Random.Range(-9f, 9f));
+            Collider2D hitObstacle = Physics2D.OverlapCircle(potentialPos, 1f, obstacleLayer);
+            float distToSpawn = Vector2.Distance(potentialPos, spawnPoint.position);
+
+            if (hitObstacle == null && distToSpawn > 3f)
+            {
+                isValid = true;
+            }
+        }
+        return potentialPos;
     }
     GeneticPathfinder GetFittest()
     {

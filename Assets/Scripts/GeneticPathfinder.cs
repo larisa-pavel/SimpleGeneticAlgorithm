@@ -28,11 +28,14 @@ public class GeneticPathfinder : MonoBehaviour
         nextPoint = transform.position;
         travelPath.Add(nextPoint);
         hasBeenInitialized = true;
+        transform.localScale = Vector3.one * dna.sizeGene;
+        creatureSpeed = dna.speedGene;
     }
     private void Update()
     {
         if (hasBeenInitialized && !hasFinished)
         {
+            if (dna == null) return;
             if(pathIndex == dna.genes.Count || Vector2.Distance(transform.position, target) < 0.5f)
             {
                 hasFinished = true;
@@ -80,13 +83,18 @@ public class GeneticPathfinder : MonoBehaviour
         get
         {
             float dist = Vector2.Distance(transform.position, target);
-            if(dist == 0)
+            if (dist < 0.0001f)
             {
                 dist = 0.0001f;
             }
+            float score = 60 / dist;
+            score -= dna.speedGene * 0.01f;
+            if (hadCrashed) { 
+                score *= 0.65f; 
+            }
             RaycastHit2D[] obstacles = Physics2D.RaycastAll(transform.position, target, obstacleLayer);
             float obstacleMultiplier = 1f - (0.1f * obstacles.Length);
-            return (60/dist) * (hadCrashed ? 0.65f : 1f) * obstacleMultiplier;
+            return score * obstacleMultiplier;
         }
     }
     public Quaternion LookAt2D(Vector2 target, float angleOffset = -90)

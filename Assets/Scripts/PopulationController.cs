@@ -85,7 +85,6 @@ public class PopulationController : MonoBehaviour
             {
                 Vector2 newPos = GetValidRandomPosition();
                 end.position = newPos;
-                break;
             }
         }
     }

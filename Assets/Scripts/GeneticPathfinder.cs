@@ -36,7 +36,7 @@ public class GeneticPathfinder : MonoBehaviour
         if (hasBeenInitialized && !hasFinished)
         {
             if (dna == null) return;
-            if(pathIndex == dna.genes.Count || Vector2.Distance(transform.position, target) < 0.5f)
+            if(pathIndex == dna.genes.Count || Vector2.Distance(transform.position, target) < 3f)
             {
                 hasFinished = true;
             }

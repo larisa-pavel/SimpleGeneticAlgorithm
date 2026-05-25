@@ -92,6 +92,7 @@ public class GeneticPathfinder : MonoBehaviour
                 dist = 0.0001f;
             }
             float score = 60 / dist;
+            score -= (pathIndex * 0.05f);
             score -= dna.speedGene * 0.01f;
             if (hadCrashed) { 
                 score *= 0.65f; 

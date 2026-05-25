@@ -105,7 +105,9 @@ public class PopulationController : MonoBehaviour
         while (!isValid && attempts < 100)
         {
             attempts++;
-            potentialPos = new Vector2(Random.Range(-18f, 18f), Random.Range(-9f, 9f));
+            float randomX = Random.Range(-48f, 48f);
+            float randomY = Random.Range(-24f, 24f);
+            potentialPos = new Vector2(randomX, randomY);
             Collider2D hitObstacle = Physics2D.OverlapCircle(potentialPos, 1f, obstacleLayer);
             float distToSpawn = Vector2.Distance(potentialPos, spawnPoint.position);
 

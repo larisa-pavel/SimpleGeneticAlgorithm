@@ -16,6 +16,8 @@ public class PopulationController : MonoBehaviour
     public Transform end;
     public LayerMask obstacleLayer;
 
+    private bool targetWasFound = false;
+
     void InitPopulation()
     {
         for(int i = 0; i < populationSize; i++)
@@ -29,11 +31,16 @@ public class PopulationController : MonoBehaviour
     {
         int survivorCut = Mathf.RoundToInt(populationSize * cutoff);
         List<GeneticPathfinder> survivors = new List<GeneticPathfinder>();
-        for(int i = 0; i < survivorCut; i++)
+        for (int i = 0; i < survivorCut; i++)
         {
             survivors.Add(GetFittest());
         }
-        for(int i = 0; i < population.Count; i++)
+        if (targetWasFound)
+        {
+            end.position = GetValidRandomPosition();
+            targetWasFound = false;
+        }
+        for (int i = 0; i < population.Count; i++)
         {
             Destroy(population[i].gameObject);
         }
@@ -81,10 +88,10 @@ public class PopulationController : MonoBehaviour
     {
         foreach (var agent in population)
         {
-            if (Vector2.Distance(agent.transform.position, end.position) < 3f)
+            if (!agent.hasFinished && Vector2.Distance(agent.transform.position, end.position) < 3f)
             {
-                Vector2 newPos = GetValidRandomPosition();
-                end.position = newPos;
+                targetWasFound = true;
+                agent.hasFinished = true;
             }
         }
     }

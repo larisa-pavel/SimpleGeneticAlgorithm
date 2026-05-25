@@ -40,10 +40,14 @@ public class GeneticPathfinder : MonoBehaviour
             {
                 hasFinished = true;
             }
-            if((Vector2)transform.position == nextPoint)
+            if ((Vector2)transform.position == nextPoint)
             {
 
-                nextPoint = (Vector2)transform.position + dna.genes[pathIndex] * pathMultiplier;
+                Vector2 dirToTarget = (target - (Vector2)transform.position).normalized;
+                float angleDeviation = dna.genes[pathIndex];
+                Vector2 rotatedDirection = Quaternion.Euler(0, 0, angleDeviation) * dirToTarget;
+                nextPoint = (Vector2)transform.position + rotatedDirection * pathMultiplier;
+
                 travelPath.Add(nextPoint);
                 targetRotation = LookAt2D(nextPoint);
                 pathIndex++;

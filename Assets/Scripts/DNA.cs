@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class DNA
 {
-    public List<Vector2> genes = new List<Vector2>();
+    public List<float> genes = new List<float>();
     public float speedGene;
     public float sizeGene;
     public DNA(int genomeLenght = 50)
     {
         for(int i = 0; i < genomeLenght; i++)
         {
-            genes.Add(new Vector2(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f)));
+            genes.Add(Random.Range(-180f, 180f));
         }
         speedGene = Random.Range(5f, 20f);
         sizeGene = Random.Range(0.05f, 0.15f);
@@ -23,7 +23,7 @@ public class DNA
             float mutationChance = Random.Range(0.0f, 1.0f);
             if(mutationChance <= mutationRate)
             {
-                genes.Add(new Vector2(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f)));
+                genes.Add(Random.Range(-180f, 180f));
             }
             else
             {

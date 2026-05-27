@@ -16,7 +16,9 @@ public class PopulationController : MonoBehaviour
     public Transform end;
     public LayerMask obstacleLayer;
 
+
     private bool targetWasFound = false;
+    private bool targetMovedThisGen = false;
 
     void InitPopulation()
     {
@@ -39,6 +41,7 @@ public class PopulationController : MonoBehaviour
         {
             end.position = GetValidRandomPosition();
             targetWasFound = false;
+            targetMovedThisGen = true;
         }
         for (int i = 0; i < population.Count; i++)
         {
@@ -57,9 +60,13 @@ public class PopulationController : MonoBehaviour
             for(int i = 0; i < survivors.Count; i++)
             {
                 GameObject go = Instantiate(creaturePrefab, spawnPoint.position, Quaternion.identity);
-                go.GetComponent<GeneticPathfinder>().InitCreature(new DNA(survivors[i].dna, survivors[Random.Range(0, 10)].dna, mutationRate), end.position);
+                go.GetComponent<GeneticPathfinder>().InitCreature(
+                    new DNA(survivors[i].dna, survivors[Random.Range(0, survivors.Count)].dna, mutationRate),
+                    end.position
+                );
+
                 population.Add(go.GetComponent<GeneticPathfinder>());
-                if(population.Count >= populationSize)
+                if (population.Count >= populationSize)
                 {
                     break;
                 }
@@ -69,6 +76,7 @@ public class PopulationController : MonoBehaviour
         {
             Destroy(survivors[i].gameObject);
         }
+        targetMovedThisGen = false;
     }
     private void Start()
     {
@@ -88,7 +96,7 @@ public class PopulationController : MonoBehaviour
     {
         foreach (var agent in population)
         {
-            if (!agent.hasFinished && Vector2.Distance(agent.transform.position, end.position) < 3f)
+            if (!agent.hasFinished && Vector2.Distance(agent.transform.position, end.position) < 3.5f)
             {
                 targetWasFound = true;
                 agent.hasFinished = true;
@@ -105,13 +113,13 @@ public class PopulationController : MonoBehaviour
         while (!isValid && attempts < 100)
         {
             attempts++;
-            float randomX = Random.Range(-48f, 48f);
+            float randomX = Random.Range(-24f, 24f);
             float randomY = Random.Range(-24f, 24f);
             potentialPos = new Vector2(randomX, randomY);
             Collider2D hitObstacle = Physics2D.OverlapCircle(potentialPos, 1f, obstacleLayer);
             float distToSpawn = Vector2.Distance(potentialPos, spawnPoint.position);
 
-            if (hitObstacle == null && distToSpawn > 3f)
+            if (hitObstacle == null && distToSpawn > 5f)
             {
                 isValid = true;
             }

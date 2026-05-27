@@ -20,24 +20,16 @@ public class DNA
     {
         for (int i = 0; i < parent.genes.Count; i++)
         {
-            float mutationChance = Random.Range(0.0f, 1.0f);
-            if(mutationChance <= mutationRate)
+            int chance = Random.Range(0, 2);
+            float inheritedAngle = (chance == 0) ? parent.genes[i] : partner.genes[i];
+            if (Random.Range(0f, 1f) <= mutationRate)
             {
-                genes.Add(Random.Range(-180f, 180f));
+                inheritedAngle += Random.Range(-90f, 90f);
+                if (inheritedAngle > 180f) inheritedAngle -= 360f;
+                if (inheritedAngle < -180f) inheritedAngle += 360f;
             }
-            else
-            {
-                int chance = Random.Range(0, 2);
-                if(chance == 0)
-                {
-                    genes.Add(parent.genes[i]);
-                }
-                else
-                {
-                    genes.Add(partner.genes[i]);
-                }
-                
-            }
+            
+            genes.Add(inheritedAngle);
         }
         speedGene = Random.Range(0, 2) == 0 ? parent.speedGene : partner.speedGene;
         sizeGene = Random.Range(0, 2) == 0 ? parent.sizeGene : partner.sizeGene;
